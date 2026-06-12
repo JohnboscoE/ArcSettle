@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DECISIONS = [
@@ -135,13 +135,10 @@ const TECH = [
 
 const AgentFeed: React.FC = () => {
   const [items, setItems] = useState(DECISIONS.slice(0, 4));
-  const [fadeIn, setFadeIn] = useState<number | null>(null);
-
   useEffect(() => {
     let idx = 4;
     const interval = setInterval(() => {
       const next = DECISIONS[idx % DECISIONS.length];
-      setFadeIn(idx);
       setItems((prev) => [next, ...prev.slice(0, 3)]);
       idx++;
     }, 2000);
