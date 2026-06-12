@@ -1,7 +1,8 @@
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const NAV = [
-  { to: "/", label: "Dashboard", icon: "▦" },
+  { to: "/dashboard", label: "Dashboard", icon: "▦" },
   { to: "/invoices", label: "Invoices", icon: "◈" },
   { to: "/pos", label: "PO Register", icon: "◉" },
   { to: "/settlements", label: "Settlements", icon: "◎" },
