@@ -9,16 +9,19 @@ import AgentLogs from './pages/AgentLogs';
 
 const App: React.FC = () => (
   <BrowserRouter>
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-page)' }}>
+    <div className="flex min-h-screen bg-page overflow-x-hidden">
       <Sidebar />
-      <main style={{ marginLeft: 220, flex: 1, padding: '32px 36px', maxWidth: 1200 }}>
-        <Routes>
-          <Route path="/"            element={<Dashboard />} />
-          <Route path="/invoices"    element={<Invoices />} />
-          <Route path="/pos"         element={<PORegister />} />
-          <Route path="/settlements" element={<Settlements />} />
-          <Route path="/agent"       element={<AgentLogs />} />
-        </Routes>
+      {/* Offset for desktop sidebar, bottom nav padding for mobile */}
+      <main className="flex-1 md:ml-56 pb-20 md:pb-0 min-w-0">
+        <div className="px-4 py-6 md:px-8 md:py-8 max-w-6xl mx-auto w-full">
+          <Routes>
+            <Route path="/"            element={<Dashboard />} />
+            <Route path="/invoices"    element={<Invoices />} />
+            <Route path="/pos"         element={<PORegister />} />
+            <Route path="/settlements" element={<Settlements />} />
+            <Route path="/agent"       element={<AgentLogs />} />
+          </Routes>
+        </div>
       </main>
     </div>
   </BrowserRouter>

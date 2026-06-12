@@ -1,268 +1,125 @@
-import React from "react";
-import { AgentDecision, InvoiceStatus } from "../types";
+import React from 'react';
+import { AgentDecision, InvoiceStatus } from '../types';
 
 // ── Card ──────────────────────────────────────────────────────────
-export const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-  children,
-  style,
-  className,
-  ...props
-}) => (
-  <div
-    {...props}
-    className={className}
-    style={{
-      background: "var(--bg-card)",
-      border: "0.5px solid var(--border)",
-      borderRadius: 10,
-      padding: 20,
-      ...style,
-    }}
-  >
+export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <div className={`bg-card border border-border rounded-xl p-4 md:p-5 ${className}`}>
     {children}
   </div>
 );
 
 // ── Button ────────────────────────────────────────────────────────
-type BtnVariant = "primary" | "outline" | "ghost" | "danger";
+type BtnVariant = 'primary' | 'outline' | 'ghost' | 'danger';
 export const Button: React.FC<{
   children: React.ReactNode;
   onClick?: () => void;
   variant?: BtnVariant;
   disabled?: boolean;
   loading?: boolean;
-  style?: React.CSSProperties;
-}> = ({ children, onClick, variant = "primary", disabled, loading, style }) => {
-  const base: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-    padding: "7px 16px",
-    borderRadius: 6,
-    fontSize: 13,
-    fontWeight: 500,
-    cursor: disabled || loading ? "not-allowed" : "pointer",
-    opacity: disabled || loading ? 0.5 : 1,
-    border: "none",
-    transition: "opacity 0.15s",
-    fontFamily: "var(--font-sans)",
-  };
-  const variants: Record<BtnVariant, React.CSSProperties> = {
-    primary: { background: "var(--accent)", color: "#003830" },
-    outline: {
-      background: "transparent",
-      color: "var(--accent)",
-      border: "0.5px solid var(--accent)",
-    },
-    ghost: {
-      background: "transparent",
-      color: "var(--text-2)",
-      border: "0.5px solid var(--border)",
-    },
-    danger: {
-      background: "transparent",
-      color: "var(--danger)",
-      border: "0.5px solid var(--danger)",
-    },
+  className?: string;
+}> = ({ children, onClick, variant = 'primary', disabled, loading, className = '' }) => {
+  const base = 'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-opacity disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
+  const variants: Record<BtnVariant, string> = {
+    primary: 'bg-accent text-[#003830]',
+    outline: 'bg-transparent text-accent border border-accent',
+    ghost:   'bg-transparent text-t2 border border-border',
+    danger:  'bg-transparent text-danger border border-danger',
   };
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      style={{ ...base, ...variants[variant], ...style }}
-    >
-      {loading ? "Processing…" : children}
+    <button onClick={onClick} disabled={disabled || loading} className={`${base} ${variants[variant]} ${className}`}>
+      {loading ? 'Processing…' : children}
     </button>
   );
 };
 
 // ── Decision Badge ────────────────────────────────────────────────
-const decisionStyles: Record<
-  AgentDecision,
-  { bg: string; color: string; label: string }
-> = {
-  PAY: { bg: "var(--accent-dim)", color: "var(--accent)", label: "PAY" },
-  PARTIAL_PAY: {
-    bg: "var(--warning-dim)",
-    color: "var(--warning)",
-    label: "PARTIAL PAY",
-  },
-  HOLD: { bg: "var(--danger-dim)", color: "var(--danger)", label: "HOLD" },
-  ESCALATE: {
-    bg: "var(--bg-raised)",
-    color: "var(--text-2)",
-    label: "ESCALATE",
-  },
-  PENDING: { bg: "var(--bg-raised)", color: "var(--text-3)", label: "PENDING" },
+const decisionStyles: Record<AgentDecision, string> = {
+  PAY:         'bg-accent-dim text-accent',
+  PARTIAL_PAY: 'bg-warning-dim text-warning',
+  HOLD:        'bg-danger-dim text-danger',
+  ESCALATE:    'bg-raised text-t2',
+  PENDING:     'bg-raised text-t3',
+};
+const decisionLabels: Record<AgentDecision, string> = {
+  PAY: 'PAY', PARTIAL_PAY: 'PARTIAL PAY', HOLD: 'HOLD', ESCALATE: 'ESCALATE', PENDING: 'PENDING',
 };
 
-export const DecisionBadge: React.FC<{ decision: AgentDecision }> = ({
-  decision,
-}) => {
-  const s = decisionStyles[decision] ?? decisionStyles.PENDING;
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        padding: "2px 10px",
-        borderRadius: 4,
-        fontSize: 11,
-        fontWeight: 600,
-        letterSpacing: "0.05em",
-        background: s.bg,
-        color: s.color,
-      }}
-    >
-      {s.label}
-    </span>
-  );
+export const DecisionBadge: React.FC<{ decision: AgentDecision }> = ({ decision }) => (
+  <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-semibold tracking-wide ${decisionStyles[decision] ?? decisionStyles.PENDING}`}>
+    {decisionLabels[decision] ?? decision}
+  </span>
+);
+
+// ── Status Badge ──────────────────────────────────────────────────
+const statusStyles: Record<InvoiceStatus, string> = {
+  pending:     'bg-raised text-t3',
+  matched:     'bg-accent-dim text-accent',
+  discrepancy: 'bg-warning-dim text-warning',
+  paid:        'bg-success-dim text-success',
+  partial_paid:'bg-warning-dim text-warning',
+  held:        'bg-danger-dim text-danger',
+  escalated:   'bg-raised text-t2',
+};
+const statusLabels: Record<InvoiceStatus, string> = {
+  pending: 'Pending', matched: 'Matched', discrepancy: 'Discrepancy',
+  paid: 'Settled', partial_paid: 'Partial', held: 'Held', escalated: 'Escalated',
 };
 
-// ── Invoice Status Badge ──────────────────────────────────────────
-const statusStyles: Record<
-  InvoiceStatus,
-  { bg: string; color: string; label: string }
-> = {
-  pending: { bg: "var(--bg-raised)", color: "var(--text-3)", label: "Pending" },
-  matched: {
-    bg: "var(--accent-dim)",
-    color: "var(--accent)",
-    label: "Matched",
-  },
-  discrepancy: {
-    bg: "var(--warning-dim)",
-    color: "var(--warning)",
-    label: "Discrepancy",
-  },
-  paid: { bg: "var(--success-dim)", color: "var(--success)", label: "Settled" },
-  partial_paid: {
-    bg: "var(--warning-dim)",
-    color: "var(--warning)",
-    label: "Partial",
-  },
-  held: { bg: "var(--danger-dim)", color: "var(--danger)", label: "Held" },
-  escalated: {
-    bg: "var(--bg-raised)",
-    color: "var(--text-2)",
-    label: "Escalated",
-  },
-};
-
-export const StatusBadge: React.FC<{ status: InvoiceStatus }> = ({
-  status,
-}) => {
-  const s = statusStyles[status] ?? statusStyles.pending;
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        padding: "2px 10px",
-        borderRadius: 4,
-        fontSize: 11,
-        fontWeight: 600,
-        letterSpacing: "0.05em",
-        background: s.bg,
-        color: s.color,
-      }}
-    >
-      {s.label}
-    </span>
-  );
-};
+export const StatusBadge: React.FC<{ status: InvoiceStatus }> = ({ status }) => (
+  <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-semibold tracking-wide ${statusStyles[status] ?? statusStyles.pending}`}>
+    {statusLabels[status] ?? status}
+  </span>
+);
 
 // ── Metric Card ───────────────────────────────────────────────────
 export const MetricCard: React.FC<{
-  label: string;
-  value: string | number;
-  sub?: string;
-  accent?: boolean;
-  danger?: boolean;
+  label: string; value: string | number; sub?: string;
+  accent?: boolean; danger?: boolean;
 }> = ({ label, value, sub, accent, danger }) => (
   <Card>
-    <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 6 }}>
-      {label}
-    </div>
-    <div
-      style={{
-        fontSize: 24,
-        fontWeight: 600,
-        color:
-          accent ? "var(--accent)"
-          : danger ? "var(--danger)"
-          : "var(--text-1)",
-        fontFamily: "var(--font-mono)",
-      }}
-    >
+    <div className="text-xs text-t2 mb-1.5">{label}</div>
+    <div className={`text-2xl font-semibold font-mono ${accent ? 'text-accent' : danger ? 'text-danger' : 'text-t1'}`}>
       {value}
     </div>
-    {sub && (
-      <div style={{ fontSize: 12, color: "var(--text-3)", marginTop: 4 }}>
-        {sub}
-      </div>
-    )}
+    {sub && <div className="text-xs text-t3 mt-1">{sub}</div>}
   </Card>
 );
 
 // ── Section Header ────────────────────────────────────────────────
-export const SectionHeader: React.FC<{
-  title: string;
-  action?: React.ReactNode;
-}> = ({ title, action }) => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginBottom: 14,
-    }}
-  >
-    <span
-      style={{
-        fontSize: 11,
-        fontWeight: 600,
-        letterSpacing: "0.08em",
-        color: "var(--text-3)",
-        textTransform: "uppercase",
-      }}
-    >
-      {title}
-    </span>
+export const SectionHeader: React.FC<{ title: string; action?: React.ReactNode }> = ({ title, action }) => (
+  <div className="flex items-center justify-between mb-3">
+    <span className="text-[11px] font-semibold tracking-widest text-t3 uppercase">{title}</span>
     {action}
   </div>
 );
 
 // ── Empty State ───────────────────────────────────────────────────
-export const EmptyState: React.FC<{ message: string; sub?: string }> = ({
-  message,
-  sub,
-}) => (
-  <div
-    style={{
-      padding: "40px 20px",
-      textAlign: "center",
-      color: "var(--text-3)",
-    }}
-  >
-    <div style={{ fontSize: 14, color: "var(--text-2)", marginBottom: 4 }}>
-      {message}
-    </div>
-    {sub && <div style={{ fontSize: 12 }}>{sub}</div>}
+export const EmptyState: React.FC<{ message: string; sub?: string }> = ({ message, sub }) => (
+  <div className="py-10 px-4 text-center">
+    <div className="text-sm text-t2 mb-1">{message}</div>
+    {sub && <div className="text-xs text-t3">{sub}</div>}
   </div>
 );
 
 // ── Spinner ───────────────────────────────────────────────────────
 export const Spinner: React.FC = () => (
-  <div
-    style={{
-      width: 16,
-      height: 16,
-      borderRadius: "50%",
-      border: "2px solid var(--border)",
-      borderTopColor: "var(--accent)",
-      animation: "spin 0.7s linear infinite",
-      display: "inline-block",
-    }}
-  />
+  <div className="w-4 h-4 rounded-full border-2 border-border border-t-accent inline-block" style={{ animation: 'spin 0.7s linear infinite' }} />
+);
+
+// ── Page Header ───────────────────────────────────────────────────
+export const PageHeader: React.FC<{ title: string; sub?: string; action?: React.ReactNode }> = ({ title, sub, action }) => (
+  <div className="flex items-start justify-between mb-6 gap-4">
+    <div>
+      <h1 className="text-xl font-semibold text-t1">{title}</h1>
+      {sub && <p className="text-sm text-t3 mt-0.5">{sub}</p>}
+    </div>
+    {action}
+  </div>
+);
+
+// ── Mobile Card Row (replaces table rows on small screens) ────────
+export const MobileRow: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <div className={`bg-card border border-border rounded-xl p-4 mb-3 ${className}`}>
+    {children}
+  </div>
 );

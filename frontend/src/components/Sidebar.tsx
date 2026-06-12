@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 const NAV = [
@@ -6,56 +6,66 @@ const NAV = [
   { to: '/invoices',    label: 'Invoices',    icon: '◈' },
   { to: '/pos',         label: 'PO Register', icon: '◉' },
   { to: '/settlements', label: 'Settlements', icon: '◎' },
-  { to: '/agent',       label: 'Agent Logs',  icon: '◈' },
+  { to: '/agent',       label: 'Agent Logs',  icon: '❖' },
 ];
 
-const Sidebar: React.FC = () => (
-  <aside style={{
-    width: 220, minHeight: '100vh', background: 'var(--bg-card)',
-    borderRight: '0.5px solid var(--border)',
-    display: 'flex', flexDirection: 'column',
-    position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100,
-  }}>
+// Bottom nav for mobile
+const BottomNav: React.FC = () => (
+  <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border flex md:hidden">
+    {NAV.map(({ to, label, icon }) => (
+      <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) =>
+        `flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5 text-[10px] font-medium transition-colors ${isActive ? 'text-accent' : 'text-t3'}`
+      }>
+        <span className="text-base leading-none">{icon}</span>
+        <span>{label}</span>
+      </NavLink>
+    ))}
+  </nav>
+);
+
+// Sidebar for desktop
+const DesktopSidebar: React.FC = () => (
+  <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-56 bg-card border-r border-border flex-col z-50">
     {/* Logo */}
-    <div style={{ padding: '24px 20px 20px', borderBottom: '0.5px solid var(--border)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{
-          width: 30, height: 30, background: 'var(--accent)',
-          borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 14, fontWeight: 700, color: '#003830',
-        }}>A</div>
+    <div className="px-5 py-6 border-b border-border">
+      <div className="flex items-center gap-2.5">
+        <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-sm font-bold text-[#003830]">A</div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)' }}>ArcSettle</div>
-          <div style={{ fontSize: 10, color: 'var(--text-3)', letterSpacing: '0.05em' }}>POWERED BY ARC · CIRCLE</div>
+          <div className="text-sm font-semibold text-t1">ArcSettle</div>
+          <div className="text-[9px] text-t3 tracking-wider">ARC · CIRCLE · USDC</div>
         </div>
       </div>
     </div>
 
     {/* Nav */}
-    <nav style={{ flex: 1, padding: '12px 10px' }}>
+    <nav className="flex-1 p-2.5">
       {NAV.map(({ to, label, icon }) => (
-        <NavLink key={to} to={to} end={to === '/'} style={({ isActive }) => ({
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '8px 10px', borderRadius: 6, marginBottom: 2,
-          fontSize: 13, fontWeight: isActive ? 500 : 400,
-          color: isActive ? 'var(--accent)' : 'var(--text-2)',
-          background: isActive ? 'var(--accent-dim)' : 'transparent',
-          textDecoration: 'none', transition: 'all 0.15s',
-        })}>
-          <span style={{ fontSize: 12, opacity: 0.7 }}>{icon}</span>
+        <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) =>
+          `flex items-center gap-2.5 px-3 py-2 rounded-lg mb-0.5 text-sm font-medium transition-all ${
+            isActive ? 'bg-accent-dim text-accent' : 'text-t2 hover:text-t1 hover:bg-raised'
+          }`
+        }>
+          <span className="text-xs opacity-70">{icon}</span>
           {label}
         </NavLink>
       ))}
     </nav>
 
     {/* Agent status */}
-    <div style={{ padding: '14px 20px', borderTop: '0.5px solid var(--border)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)' }} />
-        <span style={{ fontSize: 11, color: 'var(--text-3)' }}>Agent registered on Arc</span>
+    <div className="px-5 py-4 border-t border-border">
+      <div className="flex items-center gap-2">
+        <div className="w-1.5 h-1.5 rounded-full bg-success" style={{ animation: 'pulse-dot 2s ease-in-out infinite' }} />
+        <span className="text-[11px] text-t3">Agent live on Arc</span>
       </div>
     </div>
   </aside>
+);
+
+const Sidebar: React.FC = () => (
+  <>
+    <DesktopSidebar />
+    <BottomNav />
+  </>
 );
 
 export default Sidebar;

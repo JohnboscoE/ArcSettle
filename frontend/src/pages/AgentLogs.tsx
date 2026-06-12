@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { agentApi } from '../api';
 import { AgentLog } from '../types';
-import { Card, DecisionBadge, SectionHeader, EmptyState, Spinner } from '../components/ui';
+import { Card, DecisionBadge, SectionHeader, EmptyState, Spinner, PageHeader } from '../components/ui';
 
-const severityColor = { low: 'var(--accent)', medium: 'var(--warning)', high: 'var(--danger)' };
+const severityColor: Record<string, string> = {
+  low: 'text-accent', medium: 'text-warning', high: 'text-danger'
+};
 
 const AgentLogs: React.FC = () => {
   const [logs, setLogs] = useState<AgentLog[]>([]);
@@ -15,93 +17,71 @@ const AgentLogs: React.FC = () => {
   }, []);
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 40, color: 'var(--text-3)' }}>
-      <Spinner /> Loading agent logs…
-    </div>
+    <div className="flex items-center gap-3 p-10 text-t3"><Spinner /> Loading agent logs…</div>
   );
 
   return (
-    <div>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 600 }}>Agent logs</h1>
-        <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 3 }}>
-          Every decision the agent makes is logged here with full reasoning — stored on Arc as an immutable audit trail
-        </p>
-      </div>
+    <div className="w-full max-w-full">
+      <PageHeader
+        title="Agent logs"
+        sub="Every decision logged with full reasoning — immutable audit trail on Arc"
+      />
 
       {logs.length === 0
         ? <Card><EmptyState message="No agent decisions yet" sub="Process an invoice to see the agent's reasoning" /></Card>
         : [...logs].reverse().map(log => (
-          <Card key={log.id} style={{ marginBottom: 12, cursor: 'pointer' }} onClick={() => setExpanded(expanded === log.id ? null : log.id)}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div key={log.id} onClick={() => setExpanded(expanded === log.id ? null : log.id)}
+            className="bg-card border border-border rounded-xl p-4 mb-3 cursor-pointer hover:border-accent/30 transition-colors">
+
+            {/* Header */}
+            <div className="flex flex-wrap justify-between items-start gap-3 mb-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <DecisionBadge decision={log.decision} />
                 <div>
-                  <div style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
-                    Invoice: {log.invoiceId.slice(0, 8)}… · PO: {log.poId ?? 'none'}
+                  <div className="text-xs font-mono text-t3">
+                    {log.invoiceId.slice(0, 8)}… · {log.poId ?? 'no PO'}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
-                    {new Date(log.timestamp).toLocaleString()}
-                  </div>
+                  <div className="text-[11px] text-t3 mt-0.5">{new Date(log.timestamp).toLocaleString()}</div>
                 </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 16, fontWeight: 600, fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}>
-                  ${log.amountToSettle.toLocaleString()}
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
-                  {log.discrepancies.length} discrepanc{log.discrepancies.length === 1 ? 'y' : 'ies'}
-                </div>
+              <div className="text-right flex-shrink-0">
+                <div className="text-lg font-semibold font-mono text-accent">${log.amountToSettle.toLocaleString()}</div>
+                <div className="text-[11px] text-t3">{log.discrepancies.length} discrepanc{log.discrepancies.length === 1 ? 'y' : 'ies'}</div>
               </div>
             </div>
 
             {/* Reasoning — always visible */}
-            <div style={{
-              marginTop: 12, padding: '10px 14px',
-              background: 'var(--bg-raised)', borderRadius: 6,
-              fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6,
-              borderLeft: '2px solid var(--accent)',
-            }}>
+            <div className="p-3 bg-raised rounded-lg border-l-2 border-accent text-sm text-t2 leading-relaxed">
               {log.reasoning}
             </div>
 
             {/* Expanded details */}
             {expanded === log.id && (
-              <div style={{ marginTop: 12 }}>
+              <div className="mt-3 pt-3 border-t border-border/40">
                 {log.discrepancies.length > 0 && (
-                  <div style={{ marginBottom: 12 }}>
-                    <SectionHeader title="Discrepancies detected" />
+                  <div className="mb-3">
+                    <SectionHeader title="Discrepancies" />
                     {log.discrepancies.map((d, i) => (
-                      <div key={i} style={{
-                        display: 'flex', justifyContent: 'space-between',
-                        padding: '7px 0', borderBottom: '0.5px solid var(--border-dim)',
-                        fontSize: 12,
-                      }}>
+                      <div key={i} className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-border/30 last:border-0 gap-1">
                         <div>
-                          <span style={{ color: severityColor[d.severity], fontWeight: 600, textTransform: 'uppercase', fontSize: 10 }}>
-                            {d.severity}
-                          </span>
-                          <span style={{ color: 'var(--text-2)', marginLeft: 8 }}>{d.field}</span>
-                          <div style={{ color: 'var(--text-3)', marginTop: 2 }}>{d.note}</div>
+                          <span className={`text-[10px] font-bold uppercase ${severityColor[d.severity]}`}>{d.severity}</span>
+                          <span className="text-xs text-t2 ml-2">{d.field}</span>
+                          <div className="text-xs text-t3 mt-0.5">{d.note}</div>
                         </div>
-                        <div style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-2)' }}>
+                        <div className="text-xs font-mono text-t2 sm:text-right flex-shrink-0">
                           <div>Invoice: {d.invoiceValue}</div>
-                          <div style={{ color: 'var(--text-3)' }}>PO: {d.poValue}</div>
+                          <div className="text-t3">PO: {d.poValue}</div>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-
                 {log.onChainTxHash && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                    <span style={{ fontSize: 11, color: 'var(--text-3)' }}>On-chain tx:</span>
-                    <a
-                      href={`https://testnet.arcscan.app/tx/${log.onChainTxHash}`}
-                      target="_blank" rel="noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}
-                    >
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <span className="text-xs text-t3">On-chain TX:</span>
+                    <a href={`https://testnet.arcscan.app/tx/${log.onChainTxHash}`}
+                      target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
+                      className="text-xs font-mono text-accent hover:underline break-all">
                       {log.onChainTxHash.slice(0, 18)}… ↗
                     </a>
                   </div>
@@ -109,10 +89,8 @@ const AgentLogs: React.FC = () => {
               </div>
             )}
 
-            <div style={{ marginTop: 8, fontSize: 11, color: 'var(--text-3)' }}>
-              {expanded === log.id ? '▲ collapse' : '▼ expand details'}
-            </div>
-          </Card>
+            <div className="mt-2.5 text-[11px] text-t3">{expanded === log.id ? '▲ collapse' : '▼ expand details'}</div>
+          </div>
         ))
       }
     </div>

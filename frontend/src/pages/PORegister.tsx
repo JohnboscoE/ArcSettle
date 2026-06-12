@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { posApi } from '../api';
 import { PurchaseOrder } from '../types';
-import { Card, EmptyState, Spinner } from '../components/ui';
+import { Card, EmptyState, Spinner, PageHeader } from '../components/ui';
 
 const PORegister: React.FC = () => {
   const [pos, setPos] = useState<PurchaseOrder[]>([]);
@@ -12,51 +12,38 @@ const PORegister: React.FC = () => {
   }, []);
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 40, color: 'var(--text-3)' }}>
-      <Spinner /> Loading PO register…
-    </div>
+    <div className="flex items-center gap-3 p-10 text-t3"><Spinner /> Loading PO register…</div>
   );
 
   return (
-    <div>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 600 }}>PO Register</h1>
-        <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 3 }}>
-          {pos.length} open purchase orders · the agent matches each invoice against this register
-        </p>
-      </div>
+    <div className="w-full max-w-full">
+      <PageHeader
+        title="PO Register"
+        sub={`${pos.length} open purchase orders · agent matches each invoice against this register`}
+      />
 
-      <div style={{ display: 'grid', gap: 12 }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {pos.length === 0
           ? <Card><EmptyState message="No purchase orders" /></Card>
           : pos.map(po => (
             <Card key={po.id}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                <div>
-                  <div style={{ fontSize: 13, fontFamily: 'var(--font-mono)', color: 'var(--accent)', marginBottom: 3 }}>{po.id}</div>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-1)' }}>{po.supplierName}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>{po.description}</div>
+              <div className="flex justify-between items-start mb-3">
+                <div className="min-w-0 mr-3">
+                  <div className="text-xs font-mono text-accent mb-0.5">{po.id}</div>
+                  <div className="text-sm font-medium text-t1 truncate">{po.supplierName}</div>
+                  <div className="text-xs text-t3 mt-0.5 line-clamp-2">{po.description}</div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 20, fontWeight: 600, fontFamily: 'var(--font-mono)', color: 'var(--text-1)' }}>
-                    ${po.amount.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>{po.currency} · due {po.dueDate}</div>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-xl font-semibold font-mono text-t1">${po.amount.toLocaleString()}</div>
+                  <div className="text-[11px] text-t3 mt-0.5">{po.currency} · due {po.dueDate}</div>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: 16, paddingTop: 10, borderTop: '0.5px solid var(--border-dim)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{
-                    width: 6, height: 6, borderRadius: '50%',
-                    background: po.deliveryConfirmed ? 'var(--success)' : 'var(--danger)',
-                  }} />
-                  <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
-                    Delivery {po.deliveryConfirmed ? 'confirmed' : 'pending'}
-                  </span>
+              <div className="flex items-center gap-4 pt-3 border-t border-border/40">
+                <div className="flex items-center gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full ${po.deliveryConfirmed ? 'bg-success' : 'bg-danger'}`} />
+                  <span className="text-xs text-t3">Delivery {po.deliveryConfirmed ? 'confirmed' : 'pending'}</span>
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--text-3)' }}>
-                  Supplier ID: <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-2)' }}>{po.supplierId}</span>
-                </div>
+                <span className="text-xs text-t3 font-mono">{po.supplierId}</span>
               </div>
             </Card>
           ))
