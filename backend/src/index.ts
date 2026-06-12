@@ -12,7 +12,7 @@ import settlementRoutes from './routes/settlement';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT ?? 4000;
+const PORT = parseInt(process.env.PORT ?? '4000', 10);
 
 // Allow both production Vercel frontend and local development
 const allowedOrigins = [

@@ -32,7 +32,7 @@ async function main() {
   console.log('Creating 6 wallets (1 buyer + 5 suppliers)...');
   const walletsRes = await client.createWallets({
     walletSetId,
-    blockchains: ['ARC-TESTNET'],
+   blockchains: ['ARC-TESTNET' as any],
     count: 6,
     accountType: 'SCA',
   });

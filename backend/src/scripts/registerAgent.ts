@@ -45,14 +45,13 @@ async function main() {
   console.log(`Metadata URI: ${AGENT_METADATA_URI}\n`);
 
   // Register agent identity on ERC-8004
-  const registerRes = await client.createContractExecutionTransaction({
-    walletAddress: buyerAddress,
-    blockchain: 'ARC-TESTNET',
-    contractAddress: IDENTITY_REGISTRY,
-    abiFunctionSignature: 'register(string)',
-    abiParameters: [AGENT_METADATA_URI],
-    fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
-  });
+const registerRes = await client.createContractExecutionTransaction({
+  walletId: walletConfig.buyer.id,
+  contractAddress: IDENTITY_REGISTRY,
+  abiFunctionSignature: 'register(string)',
+  abiParameters: [AGENT_METADATA_URI],
+  fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
+});
 
   const registerId = registerRes.data?.id;
   if (!registerId) throw new Error('Failed to submit registration transaction');

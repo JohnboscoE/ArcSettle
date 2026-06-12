@@ -64,16 +64,19 @@ export async function settleInvoiceOnChain(
   // Direct USDC transfer — buyer wallet sends to supplier wallet
   // This is simpler, gas-efficient, and avoids supplier wallet needing gas
   console.log('  Executing USDC transfer via Circle Wallets...');
-const transferRes = await client.createTransaction({
-  walletAddress: buyerAddress,
-  blockchain: 'ARC-TESTNET',
-  tokenAddress: USDC_CONTRACT,
-  destinationAddress: supplierWallet.address,
-  amount: [(agentLog.amountToSettle).toString()],
+const transferRes = await client.createContractExecutionTransaction({
+  walletId: buyerWalletId,
+  contractAddress: USDC_CONTRACT,
+  abiFunctionSignature: 'transfer(address,uint256)',
+  abiParameters: [
+    supplierWallet.address,
+    Math.floor(agentLog.amountToSettle * 1_000_000).toString(),
+  ],
   fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
 });
-  const transferId = transferRes.data?.id;
-  if (!transferId) throw new Error('Failed to create transfer transaction');
+
+const transferId = transferRes.data?.id;
+if (!transferId) throw new Error('Failed to create transfer transaction');
 
   const txHash = await pollTransaction(transferId, 'USDC transfer');
   console.log(`  Transfer complete: https://testnet.arcscan.app/tx/${txHash}`);
