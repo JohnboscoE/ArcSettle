@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Autonomous B2B Invoice Settlement Backend on Arc",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon --ignore db.json --exec \"ts-node --transpile-only\" src/index.ts",
@@ -14,6 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.18.0",
+    "@circle-fin/developer-controlled-wallets": "^1.2.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
