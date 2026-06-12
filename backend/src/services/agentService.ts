@@ -4,8 +4,7 @@ import { MatchResult, AgentLog, AgentDecision, Invoice, PurchaseOrder } from '..
 import { db } from '../data/store';
 import { matchInvoiceToPO } from './poMatcher';
 
-const MOCK_MODE = !process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY.trim() === '';
-
+const MOCK_MODE = process.env.MOCK_AGENT === 'true' || !process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY.trim() === '';
 const SYSTEM_PROMPT = `You are ArcSettle, an autonomous B2B invoice settlement agent.
 Your job is to review invoices against purchase orders, reason through any discrepancies, and decide how to settle using USDC on the Arc blockchain.
 
