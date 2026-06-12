@@ -1,12 +1,12 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Landing from "./pages/Landing";
-import Dashboard from "./pages/Dashboard";
-import Invoices from "./pages/Invoices";
-import PORegister from "./pages/PORegister";
-import Settlements from "./pages/Settlements";
-import AgentLogs from "./pages/AgentLogs";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import Landing from './pages/Landing';
+import Dashboard from './pages/Dashboard';
+import Invoices from './pages/Invoices';
+import PORegister from './pages/PORegister';
+import Settlements from './pages/Settlements';
+import AgentLogs from './pages/AgentLogs';
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="flex min-h-screen bg-page overflow-x-hidden">
@@ -23,46 +23,11 @@ const App: React.FC = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route
-        path="/dashboard"
-        element={
-          <AppLayout>
-            <Dashboard />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/invoices"
-        element={
-          <AppLayout>
-            <Invoices />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/pos"
-        element={
-          <AppLayout>
-            <PORegister />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/settlements"
-        element={
-          <AppLayout>
-            <Settlements />
-          </AppLayout>
-        }
-      />
-      <Route
-        path="/agent"
-        element={
-          <AppLayout>
-            <AgentLogs />
-          </AppLayout>
-        }
-      />
+      <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
+      <Route path="/invoices" element={<AppLayout><Invoices /></AppLayout>} />
+      <Route path="/pos" element={<AppLayout><PORegister /></AppLayout>} />
+      <Route path="/settlements" element={<AppLayout><Settlements /></AppLayout>} />
+      <Route path="/agent" element={<AppLayout><AgentLogs /></AppLayout>} />
     </Routes>
   </BrowserRouter>
 );
