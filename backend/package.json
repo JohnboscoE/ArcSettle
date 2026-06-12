@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Autonomous B2B Invoice Settlement Backend on Arc",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "nodemon --ignore db.json --exec \"ts-node --transpile-only\" src/index.ts",
     "build": "tsc",
