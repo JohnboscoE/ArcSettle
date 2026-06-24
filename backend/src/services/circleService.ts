@@ -17,8 +17,14 @@ const client = initiateDeveloperControlledWalletsClient({
 const USDC_CONTRACT = '0x3600000000000000000000000000000000000000';
 
 function loadWalletConfig() {
+  // Try env var first (production), fall back to file (local dev)
+  if (process.env.WALLET_CONFIG) {
+    return JSON.parse(process.env.WALLET_CONFIG);
+  }
   const configPath = path.join(__dirname, '../../wallets.json');
-  if (!fs.existsSync(configPath)) throw new Error('wallets.json not found. Run npm run setup-wallets first.');
+  if (!fs.existsSync(configPath)) {
+    throw new Error('wallets.json not found. Run npm run setup-wallets first.');
+  }
   return JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 }
 
