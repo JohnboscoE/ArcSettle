@@ -2,6 +2,7 @@ import { initiateDeveloperControlledWalletsClient } from '@circle-fin/developer-
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -50,7 +51,12 @@ const registerRes = await client.createContractExecutionTransaction({
   contractAddress: IDENTITY_REGISTRY,
   abiFunctionSignature: 'register(string)',
   abiParameters: [AGENT_METADATA_URI],
-  fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
+  fee: {
+    type: 'level',
+    config: {
+      feeLevel: 'MEDIUM',
+    },
+  },
 });
 
   const registerId = registerRes.data?.id;
