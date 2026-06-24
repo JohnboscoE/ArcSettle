@@ -17,7 +17,6 @@ const client = initiateDeveloperControlledWalletsClient({
 const USDC_CONTRACT = '0x3600000000000000000000000000000000000000';
 
 function loadWalletConfig() {
-  // Try env var first (production), fall back to file (local dev)
   if (process.env.WALLET_CONFIG) {
     return JSON.parse(process.env.WALLET_CONFIG);
   }

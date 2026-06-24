@@ -1,0 +1,30 @@
+{
+  "walletSetId": "09a2c5d3-175e-5d3b-9d2e-4a7a96f0ac45",
+  "buyer": {
+    "id": "f9271422-53ba-5ed8-a300-33aaf8764b02",
+    "address": "0xea6adc14b5fe6fa6354e1fb1ed38f45f2d8861ca"
+  },
+  "suppliers": {
+    "sup-001": {
+      "id": "b0d57342-b817-5c9f-9fb3-f165f46e0599",
+      "address": "0xaea790244b7be35ef555db5b6f7159f8eae42f79"
+    },
+    "sup-002": {
+      "id": "2db15b1f-9085-5a42-bc51-3c0f6e4d46a1",
+      "address": "0x7f1b8605f6f7c139348da0adcd52886d796665af"
+    },
+    "sup-003": {
+      "id": "f2dcc5a4-7cfe-5161-ae77-c85fa75cd64f",
+      "address": "0xa50db558159dd0d7c612fbbc78b38b3c8e67ce84"
+    },
+    "sup-004": {
+      "id": "bf36afa0-f155-59be-b9df-d797b5ba9e19",
+      "address": "0x45479e6d35d67f033cf28743bed37225760ac0a9"
+    },
+    "sup-005": {
+      "id": "901e579d-c16d-51db-95b9-a40aea69ebb4",
+      "address": "0xb91288b2418750dca33c7d430dfd3dc46cef4d30"
+    }
+  },
+  "createdAt": "2026-06-24T23:13:13.622Z"
+}
